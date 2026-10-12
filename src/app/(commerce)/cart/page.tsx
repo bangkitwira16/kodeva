@@ -53,18 +53,24 @@ export default function CartPage() {
           <div>
             {pricedItems.map((item) => (
               <CartItemRow
-                key={`${item.product.id}-${item.selectedPackage.id}`}
+                key={`${item.product.id}-${item.selectedPackage.id}-${item.billingPeriod ?? "monthly"}`}
                 maxQuantity={item.maxQuantity}
                 onQuantityChange={(quantity) => {
                   setQuantity(
                     item.product.id,
                     item.selectedPackage.id,
                     quantity,
+                    item.billingPeriod,
                   );
                 }}
                 onRemove={() =>
-                  removeItem(item.product.id, item.selectedPackage.id)
+                  removeItem(
+                    item.product.id,
+                    item.selectedPackage.id,
+                    item.billingPeriod,
+                  )
                 }
+                billingPeriod={item.billingPeriod}
                 product={item.product}
                 promoQuantity={item.promoQuantity}
                 quantity={item.quantity}

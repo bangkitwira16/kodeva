@@ -3,13 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import type {
+  BillingPeriod,
   Product,
   ProductPackage,
 } from "@/features/marketplace/types/product";
+import { getBillingPriceInCents } from "@/features/marketplace/services/billing";
 
 type CartItemRowProps = {
   product: Product;
   selectedPackage: ProductPackage;
+  billingPeriod?: BillingPeriod;
   quantity: number;
   maxQuantity: number;
   onQuantityChange: (quantity: number) => void;
@@ -22,6 +25,7 @@ type CartItemRowProps = {
 export function CartItemRow({
   product,
   selectedPackage,
+  billingPeriod = "monthly",
   quantity,
   maxQuantity,
   onQuantityChange,
@@ -31,15 +35,15 @@ export function CartItemRow({
   locale = "en-US",
 }: CartItemRowProps) {
   const [limitMessage, setLimitMessage] = useState("");
-  const quantityInputId = `cart-quantity-${product.id}-${selectedPackage.id}`;
+  const quantityInputId = `cart-quantity-${product.id}-${selectedPackage.id}-${billingPeriod}`;
   const safeMaximum = Math.max(0, Math.floor(maxQuantity));
   const isOverQuota = quantity > safeMaximum;
-  const unitPrice =
-    selectedPackage.promoPriceInCents ?? selectedPackage.priceInCents;
+  const unitPrice = getBillingPriceInCents(selectedPackage, billingPeriod, true);
   const discountedQuantity = Math.min(quantity, promoQuantity ?? quantity);
   const totalInCents =
     unitPrice * discountedQuantity +
-    selectedPackage.priceInCents * (quantity - discountedQuantity);
+    getBillingPriceInCents(selectedPackage, billingPeriod, false) *
+      (quantity - discountedQuantity);
   const totalPrice = new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
@@ -76,7 +80,8 @@ export function CartItemRow({
         <div className="min-w-0">
           <h3 className="truncate font-semibold text-neutral-950">{product.name}</h3>
           <p className="mt-1 text-sm text-neutral-600">
-            {selectedPackage.name} package
+            {selectedPackage.name} package ·{" "}
+            {billingPeriod === "annually" ? "Annual billing" : "Monthly billing"}
           </p>
         </div>
       </div>

@@ -3,8 +3,17 @@
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { pushGa4EcommerceEvent } from "@/features/analytics/ga4";
+import { PlanComparisonTable } from "@/features/marketplace/components/plan-comparison-table";
 import { useCartStore } from "@/features/marketplace/stores/cart.store";
-import type { Product } from "@/features/marketplace/types/product";
+import {
+  type BillingPeriod,
+  type Product,
+} from "@/features/marketplace/types/product";
+import {
+  ANNUAL_DISCOUNT_PERCENT,
+  getAnnualReferencePriceInCents,
+  getBillingPriceInCents,
+} from "@/features/marketplace/services/billing";
 
 export function ProductDetailView({ product }: { product: Product }) {
   const instanceId = useId();
@@ -14,6 +23,8 @@ export function ProductDetailView({ product }: { product: Product }) {
   const [selectedPackageId, setSelectedPackageId] = useState(
     product.packages[0]?.id ?? "",
   );
+  const [billingPeriod, setBillingPeriod] =
+    useState<BillingPeriod>("monthly");
   const [message, setMessage] = useState("");
   const selectedPackage = product.packages.find(
     ({ id }) => id === selectedPackageId,
@@ -29,10 +40,13 @@ export function ProductDetailView({ product }: { product: Product }) {
         .filter((item) => item.selectedPackage.promoPriceInCents !== undefined)
         .reduce((sum, item) => sum + item.quantity, 0),
   );
-  const selectedPriceInCents =
-    selectedPackage?.promoPriceInCents !== undefined && promoRemaining > 0
-      ? selectedPackage.promoPriceInCents
-      : (selectedPackage?.priceInCents ?? 0);
+  const selectedPriceInCents = selectedPackage
+    ? getBillingPriceInCents(
+        selectedPackage,
+        billingPeriod,
+        promoRemaining > 0,
+      )
+    : 0;
 
   useEffect(() => {
     if (viewedProduct.current === product.id) return;
@@ -47,7 +61,9 @@ export function ProductDetailView({ product }: { product: Product }) {
             item_id: product.id,
             item_name: product.name,
             item_category: product.category,
-            item_variant: selectedPackage?.name,
+            item_variant: selectedPackage
+              ? `${selectedPackage.name} (${billingPeriod})`
+              : undefined,
             price: selectedPriceInCents / 100,
             quantity: 1,
           },
@@ -60,8 +76,9 @@ export function ProductDetailView({ product }: { product: Product }) {
     product.id,
     product.name,
     product.category,
-    selectedPackage?.name,
+    selectedPackage,
     selectedPriceInCents,
+    billingPeriod,
   ]);
 
   return (
@@ -154,32 +171,75 @@ export function ProductDetailView({ product }: { product: Product }) {
             })}
           </div>
         </fieldset>
+        <fieldset className="mt-6">
+          <legend className="mb-3 text-sm font-semibold text-neutral-900">
+            Billing period
+          </legend>
+          <div className="inline-flex flex-wrap rounded-xl border border-neutral-200 bg-neutral-50 p-1">
+            {(
+              [
+                ["monthly", "Monthly"],
+                ["annually", "Annually"],
+              ] as const
+            ).map(([period, label]) => {
+              const checked = billingPeriod === period;
+              return (
+                <label
+                  className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${
+                    checked
+                      ? "bg-white text-neutral-950 shadow-sm"
+                      : "text-neutral-600 hover:text-neutral-950"
+                  }`}
+                  key={period}
+                >
+                  <input
+                    checked={checked}
+                    className="sr-only"
+                    name={`billing-period-${product.id}`}
+                    onChange={() => setBillingPeriod(period)}
+                    type="radio"
+                    value={period}
+                  />
+                  {label}
+                  {period === "annually" && (
+                    <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-800">
+                      Save {ANNUAL_DISCOUNT_PERCENT}%
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+        <PlanComparisonTable />
         {selectedPackage && (
           <div aria-live="polite" className="mt-6 flex items-baseline gap-3">
             <p className="text-2xl font-semibold text-neutral-950">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-              }).format(
-                ((selectedPackage.promoPriceInCents !== undefined &&
-                promoRemaining > 0
-                  ? selectedPackage.promoPriceInCents
-                  : selectedPackage.priceInCents) /
-                  100),
-              )}
+              }).format(selectedPriceInCents / 100)}
             </p>
-            {selectedPackage.promoPriceInCents !== undefined &&
-              promoRemaining > 0 && (
-                <p className="text-neutral-500">
-                  <span className="sr-only">Original price: </span>
-                  <s>
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(selectedPackage.priceInCents / 100)}
-                  </s>
-                </p>
-              )}
+            <span className="text-sm text-neutral-600">
+              {billingPeriod === "annually" ? "per year" : "per month"}
+            </span>
+            {billingPeriod === "annually" ||
+            (selectedPackage.promoPriceInCents !== undefined &&
+              promoRemaining > 0) ? (
+              <p className="text-neutral-500">
+                <span className="sr-only">Original price: </span>
+                <s>
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(
+                    (billingPeriod === "annually"
+                      ? getAnnualReferencePriceInCents(selectedPackage)
+                      : selectedPackage.priceInCents) / 100,
+                  )}
+                </s>
+              </p>
+              ) : null}
           </div>
         )}
         <button
@@ -190,7 +250,7 @@ export function ProductDetailView({ product }: { product: Product }) {
           }
           onClick={() => {
             if (!selectedPackage) return;
-            const result = addItem(product, selectedPackage);
+            const result = addItem(product, selectedPackage, billingPeriod);
             if (result.success) {
               const priceInCents = selectedPriceInCents;
               pushGa4EcommerceEvent("add_to_cart", {
@@ -201,7 +261,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                     item_id: product.id,
                     item_name: product.name,
                     item_category: product.category,
-                    item_variant: selectedPackage.name,
+                    item_variant: `${selectedPackage.name} (${billingPeriod})`,
                     price: priceInCents / 100,
                     quantity: 1,
                   },

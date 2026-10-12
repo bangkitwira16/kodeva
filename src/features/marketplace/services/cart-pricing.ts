@@ -4,6 +4,7 @@ import {
   validateVoucher,
   type VoucherValidation,
 } from "@/features/marketplace/services/vouchers";
+import { getBillingPriceInCents } from "@/features/marketplace/services/billing";
 
 export type PricedCartItem = CartItem & {
   promoQuantity: number;
@@ -46,10 +47,12 @@ export function getCartPricing(
       item.product.id,
       usedPromo + promoQuantity,
     );
+    const billingPeriod = item.billingPeriod ?? "monthly";
     const totalForItem =
-      (item.selectedPackage.promoPriceInCents ?? item.selectedPackage.priceInCents) *
+      getBillingPriceInCents(item.selectedPackage, billingPeriod, true) *
         promoQuantity +
-      item.selectedPackage.priceInCents * (item.quantity - promoQuantity);
+      getBillingPriceInCents(item.selectedPackage, billingPeriod, false) *
+        (item.quantity - promoQuantity);
     totalInCents += totalForItem;
 
     const totalQuantity =

@@ -5,6 +5,8 @@ export type ProductPackage = {
   promoPriceInCents?: number;
 };
 
+export type BillingPeriod = "monthly" | "annually";
+
 export type Product = {
   id: string;
   slug: string;
@@ -26,4 +28,5 @@ export type CartItem = {
   product: Product;
   selectedPackage: ProductPackage;
   quantity: number;
+  billingPeriod?: BillingPeriod;
 };

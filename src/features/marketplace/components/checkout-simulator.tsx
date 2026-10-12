@@ -18,6 +18,7 @@ type CheckoutPayload = {
     productName: string;
     packageId: string;
     packageName: string;
+    billingPeriod: "monthly" | "annually";
     quantity: number;
     totalInCents: number;
   }>;
@@ -72,7 +73,7 @@ export function CheckoutSimulator() {
           item_id: item.product.id,
           item_name: item.product.name,
           item_category: item.product.category,
-          item_variant: item.selectedPackage.name,
+          item_variant: `${item.selectedPackage.name} (${item.billingPeriod ?? "monthly"})`,
           price:
             item.quantity > 0
               ? item.totalInCents / item.quantity / 100
@@ -99,6 +100,7 @@ export function CheckoutSimulator() {
         productName: item.product.name,
         packageId: item.selectedPackage.id,
         packageName: item.selectedPackage.name,
+        billingPeriod: item.billingPeriod ?? "monthly",
         quantity: item.quantity,
         totalInCents: item.totalInCents,
       })),
@@ -247,10 +249,12 @@ export function CheckoutSimulator() {
           {pricing.items.map((item) => (
             <li
               className="flex justify-between gap-3 text-sm"
-              key={`${item.product.id}-${item.selectedPackage.id}`}
+              key={`${item.product.id}-${item.selectedPackage.id}-${item.billingPeriod ?? "monthly"}`}
             >
               <span className="text-neutral-700">
-                {item.product.name} · {item.selectedPackage.name} × {item.quantity}
+                {item.product.name} · {item.selectedPackage.name} ·{" "}
+                {item.billingPeriod === "annually" ? "Annual" : "Monthly"} ×{" "}
+                {item.quantity}
               </span>
               <span className="shrink-0 font-medium text-neutral-950">
                 {formatCurrency(item.totalInCents)}

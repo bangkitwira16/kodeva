@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type {
   CartItem,
+  BillingPeriod,
   Product,
   ProductPackage,
 } from "@/features/marketplace/types/product";
@@ -18,13 +19,19 @@ type CartState = {
   addItem: (
     product: Product,
     selectedPackage: ProductPackage,
+    billingPeriod?: BillingPeriod,
   ) => { success: boolean; message?: string };
   setQuantity: (
     productId: string,
     packageId: string,
     quantity: number,
+    billingPeriod?: BillingPeriod,
   ) => { success: boolean; message?: string };
-  removeItem: (productId: string, packageId: string) => void;
+  removeItem: (
+    productId: string,
+    packageId: string,
+    billingPeriod?: BillingPeriod,
+  ) => void;
   applyVoucher: (code: string) => { success: boolean; message: string };
   removeVoucher: () => void;
   redeemAppliedVoucher: () => boolean;
@@ -45,7 +52,7 @@ export const useCartStore = create<CartState>()(
       appliedVoucherCode: null,
       voucherRedemptionCounts: {},
       hasHydrated: false,
-      addItem: (product, selectedPackage) => {
+      addItem: (product, selectedPackage, billingPeriod = "monthly") => {
         const items = get().items;
         if (
           aggregateProductQuantity(items, product.id) >=
@@ -60,26 +67,29 @@ export const useCartStore = create<CartState>()(
         const existing = items.find(
           (item) =>
             item.product.id === product.id &&
-            item.selectedPackage.id === selectedPackage.id,
+            item.selectedPackage.id === selectedPackage.id &&
+            (item.billingPeriod ?? "monthly") === billingPeriod,
         );
         set({
           items: existing
             ? items.map((item) =>
                 item.product.id === product.id &&
-                item.selectedPackage.id === selectedPackage.id
+                item.selectedPackage.id === selectedPackage.id &&
+                (item.billingPeriod ?? "monthly") === billingPeriod
                   ? { ...item, quantity: item.quantity + 1, product }
                   : item,
               )
-            : [...items, { product, selectedPackage, quantity: 1 }],
+            : [...items, { product, selectedPackage, quantity: 1, billingPeriod }],
         });
         return { success: true };
       },
-      setQuantity: (productId, packageId, quantity) => {
+      setQuantity: (productId, packageId, quantity, billingPeriod = "monthly") => {
         const items = get().items;
         const item = items.find(
           (candidate) =>
             candidate.product.id === productId &&
-            candidate.selectedPackage.id === packageId,
+            candidate.selectedPackage.id === packageId &&
+            (candidate.billingPeriod ?? "monthly") === billingPeriod,
         );
         if (!item || quantity < 1 || !Number.isInteger(quantity)) {
           return { success: false, message: "Enter a valid license quantity." };
@@ -100,19 +110,21 @@ export const useCartStore = create<CartState>()(
         set({
           items: items.map((candidate) =>
             candidate.product.id === productId &&
-            candidate.selectedPackage.id === packageId
+            candidate.selectedPackage.id === packageId &&
+            (candidate.billingPeriod ?? "monthly") === billingPeriod
               ? { ...candidate, quantity }
               : candidate,
           ),
         });
         return { success: true };
       },
-      removeItem: (productId, packageId) =>
+      removeItem: (productId, packageId, billingPeriod = "monthly") =>
         set((state) => ({
           items: state.items.filter(
             (item) =>
               item.product.id !== productId ||
-              item.selectedPackage.id !== packageId,
+              item.selectedPackage.id !== packageId ||
+              (item.billingPeriod ?? "monthly") !== billingPeriod,
           ),
         })),
       applyVoucher: (code) => {
