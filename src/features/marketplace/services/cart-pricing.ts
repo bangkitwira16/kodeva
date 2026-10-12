@@ -1,4 +1,9 @@
 import type { CartItem } from "@/features/marketplace/types/product";
+import {
+  getVoucherDiscountInCents,
+  validateVoucher,
+  type VoucherValidation,
+} from "@/features/marketplace/services/vouchers";
 
 export type PricedCartItem = CartItem & {
   promoQuantity: number;
@@ -6,8 +11,16 @@ export type PricedCartItem = CartItem & {
   totalInCents: number;
 };
 
-export function getCartPricing(items: CartItem[]): {
+export function getCartPricing(
+  items: CartItem[],
+  voucherCode: string | null = null,
+  voucherRedemptionCounts: Record<string, number> = {},
+): {
   items: PricedCartItem[];
+  subtotalInCents: number;
+  voucherDiscountInCents: number;
+  voucherValidation: VoucherValidation | null;
+  appliedVoucherCode: string | null;
   totalInCents: number;
 } {
   const quantityByProduct = new Map<string, number>();
@@ -52,7 +65,29 @@ export function getCartPricing(items: CartItem[]): {
     };
   });
 
-  return { items: pricedItems, totalInCents };
+  const subtotalInCents = totalInCents;
+  const voucherValidation = voucherCode
+    ? validateVoucher(
+        voucherCode,
+        subtotalInCents,
+        voucherRedemptionCounts[voucherCode] ?? 0,
+      )
+    : null;
+  const voucherDiscountInCents =
+    voucherValidation?.valid === true
+      ? getVoucherDiscountInCents(voucherValidation.voucher, subtotalInCents)
+      : 0;
+  totalInCents = Math.max(0, subtotalInCents - voucherDiscountInCents);
+
+  return {
+    items: pricedItems,
+    subtotalInCents,
+    voucherDiscountInCents,
+    voucherValidation,
+    appliedVoucherCode:
+      voucherValidation?.valid === true ? voucherValidation.voucher.code : null,
+    totalInCents,
+  };
 }
 
 export function formatCurrency(amountInCents: number, currency = "USD") {

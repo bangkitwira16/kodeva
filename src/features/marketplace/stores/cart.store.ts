@@ -7,9 +7,13 @@ import type {
   Product,
   ProductPackage,
 } from "@/features/marketplace/types/product";
+import { getCartPricing } from "@/features/marketplace/services/cart-pricing";
+import { normalizeVoucherCode, validateVoucher } from "@/features/marketplace/services/vouchers";
 
 type CartState = {
   items: CartItem[];
+  appliedVoucherCode: string | null;
+  voucherRedemptionCounts: Record<string, number>;
   hasHydrated: boolean;
   addItem: (
     product: Product,
@@ -21,6 +25,9 @@ type CartState = {
     quantity: number,
   ) => { success: boolean; message?: string };
   removeItem: (productId: string, packageId: string) => void;
+  applyVoucher: (code: string) => { success: boolean; message: string };
+  removeVoucher: () => void;
+  redeemAppliedVoucher: () => boolean;
   clear: () => void;
   setHasHydrated: (hasHydrated: boolean) => void;
 };
@@ -35,6 +42,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      appliedVoucherCode: null,
+      voucherRedemptionCounts: {},
       hasHydrated: false,
       addItem: (product, selectedPackage) => {
         const items = get().items;
@@ -106,14 +115,57 @@ export const useCartStore = create<CartState>()(
               item.selectedPackage.id !== packageId,
           ),
         })),
-      clear: () => set({ items: [] }),
+      applyVoucher: (code) => {
+        const normalizedCode = normalizeVoucherCode(code);
+        const state = get();
+        const subtotalInCents = getCartPricing(state.items).subtotalInCents;
+        const validation = validateVoucher(
+          normalizedCode,
+          subtotalInCents,
+          state.voucherRedemptionCounts[normalizedCode] ?? 0,
+        );
+        if (!validation.valid) {
+          return { success: false, message: validation.message };
+        }
+
+        set({ appliedVoucherCode: validation.voucher.code });
+        return {
+          success: true,
+          message: `${validation.voucher.code} applied successfully.`,
+        };
+      },
+      removeVoucher: () => set({ appliedVoucherCode: null }),
+      redeemAppliedVoucher: () => {
+        const { appliedVoucherCode, voucherRedemptionCounts, items } = get();
+        if (!appliedVoucherCode) return false;
+
+        const pricing = getCartPricing(items, appliedVoucherCode, voucherRedemptionCounts);
+        if (pricing.voucherValidation?.valid !== true) {
+          return false;
+        }
+
+        set({
+          voucherRedemptionCounts: {
+            ...voucherRedemptionCounts,
+            [appliedVoucherCode]:
+              (voucherRedemptionCounts[appliedVoucherCode] ?? 0) + 1,
+          },
+          appliedVoucherCode: null,
+        });
+        return true;
+      },
+      clear: () => set({ items: [], appliedVoucherCode: null }),
       setHasHydrated: (hasHydrated) => set({ hasHydrated }),
     }),
     {
       name: "kodeva-marketplace-cart",
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({
+        items: state.items,
+        appliedVoucherCode: state.appliedVoucherCode,
+        voucherRedemptionCounts: state.voucherRedemptionCounts,
+      }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

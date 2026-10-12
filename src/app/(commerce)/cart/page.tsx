@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { SectionWrapper } from "@/components/layout/section-wrapper";
 import { CartItemRow } from "@/features/marketplace/components/cart-item-row";
+import { VoucherCodeControl } from "@/features/marketplace/components/voucher-code-control";
 import {
   formatCurrency,
   getCartPricing,
@@ -14,7 +15,16 @@ export default function CartPage() {
   const hasHydrated = useCartStore((state) => state.hasHydrated);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
-  const { items: pricedItems, totalInCents } = getCartPricing(items);
+  const appliedVoucherCode = useCartStore((state) => state.appliedVoucherCode);
+  const voucherRedemptionCounts = useCartStore(
+    (state) => state.voucherRedemptionCounts,
+  );
+  const pricing = getCartPricing(
+    items,
+    appliedVoucherCode,
+    voucherRedemptionCounts,
+  );
+  const { items: pricedItems, totalInCents } = pricing;
 
   return (
     <SectionWrapper
@@ -63,7 +73,24 @@ export default function CartPage() {
             ))}
           </div>
           <div className="ml-auto mt-8 max-w-sm rounded-2xl bg-neutral-50 p-5">
-            <div className="flex justify-between gap-4 text-lg font-semibold">
+            <VoucherCodeControl
+              appliedVoucherCode={appliedVoucherCode}
+              subtotalInCents={pricing.subtotalInCents}
+              voucherValidation={pricing.voucherValidation}
+            />
+            <div className="mt-4 space-y-2 border-t border-neutral-200 pt-4 text-sm">
+              <div className="flex justify-between gap-4">
+                <span className="text-neutral-600">Subtotal</span>
+                <span>{formatCurrency(pricing.subtotalInCents)}</span>
+              </div>
+              {pricing.voucherDiscountInCents > 0 && (
+                <div className="flex justify-between gap-4 text-emerald-800">
+                  <span>Voucher discount</span>
+                  <span>-{formatCurrency(pricing.voucherDiscountInCents)}</span>
+                </div>
+              )}
+            </div>
+            <div className="mt-3 flex justify-between gap-4 text-lg font-semibold">
               <span>Estimated total</span>
               <span>{formatCurrency(totalInCents)}</span>
             </div>

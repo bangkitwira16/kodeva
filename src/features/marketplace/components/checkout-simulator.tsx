@@ -6,6 +6,7 @@ import { appendUtmParameters } from "@/features/attribution/utm";
 import { useUtmParameters } from "@/features/attribution/utm-provider";
 import { pushGa4EcommerceEvent } from "@/features/analytics/ga4";
 import { formatCurrency, getCartPricing } from "@/features/marketplace/services/cart-pricing";
+import { VoucherCodeControl } from "@/features/marketplace/components/voucher-code-control";
 import { useCartStore } from "@/features/marketplace/stores/cart.store";
 
 type PaymentStatus = "idle" | "processing" | "success" | "error";
@@ -20,6 +21,9 @@ type CheckoutPayload = {
     quantity: number;
     totalInCents: number;
   }>;
+  subtotalInCents: number;
+  voucherCode: string | null;
+  voucherDiscountInCents: number;
   totalInCents: number;
 };
 
@@ -39,9 +43,20 @@ export function CheckoutSimulator() {
   const items = useCartStore((state) => state.items);
   const hasHydrated = useCartStore((state) => state.hasHydrated);
   const clearCart = useCartStore((state) => state.clear);
+  const appliedVoucherCode = useCartStore((state) => state.appliedVoucherCode);
+  const voucherRedemptionCounts = useCartStore(
+    (state) => state.voucherRedemptionCounts,
+  );
+  const redeemAppliedVoucher = useCartStore(
+    (state) => state.redeemAppliedVoucher,
+  );
   const [status, setStatus] = useState<PaymentStatus>("idle");
   const [simulateFailure, setSimulateFailure] = useState(false);
-  const pricing = getCartPricing(items);
+  const pricing = getCartPricing(
+    items,
+    appliedVoucherCode,
+    voucherRedemptionCounts,
+  );
 
   useEffect(() => {
     if (!hasHydrated || pricing.items.length === 0 || didTrackCheckout.current) {
@@ -87,6 +102,9 @@ export function CheckoutSimulator() {
         quantity: item.quantity,
         totalInCents: item.totalInCents,
       })),
+      subtotalInCents: pricing.subtotalInCents,
+      voucherCode: pricing.appliedVoucherCode,
+      voucherDiscountInCents: pricing.voucherDiscountInCents,
       totalInCents: pricing.totalInCents,
     }, utmParameters);
 
@@ -97,6 +115,7 @@ export function CheckoutSimulator() {
       return;
     }
 
+    redeemAppliedVoucher();
     clearCart();
     setStatus("success");
   }
@@ -219,6 +238,11 @@ export function CheckoutSimulator() {
         className="h-fit rounded-2xl bg-neutral-50 p-5"
       >
         <h2 className="font-semibold text-neutral-950">Order summary</h2>
+        <VoucherCodeControl
+          appliedVoucherCode={appliedVoucherCode}
+          subtotalInCents={pricing.subtotalInCents}
+          voucherValidation={pricing.voucherValidation}
+        />
         <ul className="mt-4 space-y-4">
           {pricing.items.map((item) => (
             <li
@@ -234,7 +258,19 @@ export function CheckoutSimulator() {
             </li>
           ))}
         </ul>
-        <div className="mt-5 flex justify-between border-t border-neutral-200 pt-4 font-semibold">
+        <div className="mt-5 space-y-2 border-t border-neutral-200 pt-4 text-sm">
+          <div className="flex justify-between gap-3">
+            <span className="text-neutral-600">Subtotal</span>
+            <span>{formatCurrency(pricing.subtotalInCents)}</span>
+          </div>
+          {pricing.voucherDiscountInCents > 0 && (
+            <div className="flex justify-between gap-3 text-emerald-800">
+              <span>Voucher discount</span>
+              <span>-{formatCurrency(pricing.voucherDiscountInCents)}</span>
+            </div>
+          )}
+        </div>
+        <div className="mt-3 flex justify-between border-t border-neutral-200 pt-4 font-semibold">
           <span>Total</span>
           <span>{formatCurrency(pricing.totalInCents)}</span>
         </div>
