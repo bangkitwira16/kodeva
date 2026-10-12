@@ -63,6 +63,7 @@ export function CartItemRow({
             alt=""
             className="size-16 shrink-0 rounded-xl bg-neutral-100 object-cover sm:size-20"
             height={80}
+            sizes="(max-width: 640px) 64px, 80px"
             src={product.imageUrl}
             width={80}
           />

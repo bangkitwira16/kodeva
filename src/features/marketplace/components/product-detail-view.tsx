@@ -73,6 +73,7 @@ export function ProductDetailView({ product }: { product: Product }) {
             className="aspect-[4/3] w-full rounded-2xl bg-neutral-100 object-cover"
             height={720}
             priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
             src={product.imageUrl}
             width={960}
           />
@@ -89,6 +90,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                     alt={screenshot.alt}
                     className="aspect-video w-full bg-neutral-100 object-cover"
                     height={360}
+                    sizes="(max-width: 640px) 50vw, 25vw"
                     src={screenshot.url}
                     width={640}
                   />

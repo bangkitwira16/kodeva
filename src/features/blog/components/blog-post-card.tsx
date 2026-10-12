@@ -10,6 +10,7 @@ export function BlogPostCard({ post }: { post: PublishedBlogPost }) {
           alt={post.coverImage.alt ?? ""}
           className="aspect-[16/9] w-full object-cover"
           height={450}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           src={post.coverImage.url}
           width={800}
         />

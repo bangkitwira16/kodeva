@@ -39,6 +39,7 @@ const portableTextComponents: PortableTextComponents = {
             alt={imageValue.alt ?? ""}
             className="h-auto w-full rounded-xl"
             height={720}
+            sizes="(max-width: 768px) 100vw, 768px"
             src={imageValue.asset.url}
             width={1200}
           />
@@ -157,6 +158,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           className="mt-8 aspect-[16/9] w-full rounded-2xl object-cover"
           height={675}
           priority
+          sizes="(max-width: 768px) 100vw, 768px"
           src={post.coverImage.url}
           width={1200}
         />

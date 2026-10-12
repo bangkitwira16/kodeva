@@ -58,22 +58,24 @@ export default async function HomePage() {
         {content?.bannerImage?.url && (
           <Image
             alt={content.bannerImage.alt ?? ""}
-            className="mb-8 max-h-[28rem] w-full rounded-2xl object-cover"
+            className="mb-8 aspect-[2/1] w-full rounded-2xl object-cover"
+            fetchPriority="high"
             height={720}
             priority
+            sizes="(max-width: 768px) 100vw, 1152px"
             src={content.bannerImage.url}
             width={1440}
           />
         )}
         <div className="flex flex-wrap gap-3">
           <Link
-            className="min-h-11 rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
+            className="w-full sm:w-auto justify-center sm:justify-start min-h-11 rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
             href={getSafeCtaHref(content?.heroCtaHref)}
           >
             {content?.heroCtaLabel || "Explore the marketplace"}
           </Link>
           <Link
-            className="min-h-11 rounded-full border border-neutral-300 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
+            className="w-full sm:w-auto justify-center sm:justify-start min-h-11 rounded-full border border-neutral-300 px-6 py-3 text-sm font-semibold text-neutral-900 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
             href="/blog"
           >
             Read the blog

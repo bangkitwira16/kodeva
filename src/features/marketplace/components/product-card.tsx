@@ -60,6 +60,7 @@ export function ProductCard({
           className="mb-5 aspect-[4/3] w-full rounded-xl bg-neutral-100 object-cover"
           height={360}
           priority={false}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           src={product.imageUrl}
           width={480}
         />
