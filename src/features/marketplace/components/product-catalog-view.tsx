@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProductCard } from "@/features/marketplace/components/product-card";
 import { useCartStore } from "@/features/marketplace/stores/cart.store";
+import { pushGa4EcommerceEvent } from "@/features/analytics/ga4";
 import type { Product } from "@/features/marketplace/types/product";
 
 export function ProductCatalogView({
@@ -13,6 +14,7 @@ export function ProductCatalogView({
   initialCategory?: string;
 }) {
   const addItem = useCartStore((state) => state.addItem);
+  const cartItems = useCartStore((state) => state.items);
   const [category, setCategory] = useState(
     initialCategory &&
       products.some((product) => product.categorySlug === initialCategory)
@@ -174,6 +176,34 @@ export function ProductCatalogView({
             key={product.id}
             onAddToCart={(item, selectedPackage) => {
               const result = addItem(item, selectedPackage);
+              if (result.success) {
+                const promoUsed = cartItems
+                  .filter(
+                    (cartItem) =>
+                      cartItem.product.id === item.id &&
+                      cartItem.selectedPackage.promoPriceInCents !== undefined,
+                  )
+                  .reduce((quantity, cartItem) => quantity + cartItem.quantity, 0);
+                const priceInCents =
+                  selectedPackage.promoPriceInCents !== undefined &&
+                  promoUsed < item.promoLicenseQuota
+                    ? selectedPackage.promoPriceInCents
+                    : selectedPackage.priceInCents;
+                pushGa4EcommerceEvent("add_to_cart", {
+                  currency: "USD",
+                  value: priceInCents / 100,
+                  items: [
+                    {
+                      item_id: item.id,
+                      item_name: item.name,
+                      item_category: item.category,
+                      item_variant: selectedPackage.name,
+                      price: priceInCents / 100,
+                      quantity: 1,
+                    },
+                  ],
+                });
+              }
               setMessage(
                 result.success
                   ? `${item.name} (${selectedPackage.name}) added to your cart.`

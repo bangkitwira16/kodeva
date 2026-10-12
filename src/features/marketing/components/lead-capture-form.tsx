@@ -2,8 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { useId } from "react";
+import { appendUtmParameters, type UtmParameters } from "@/features/attribution/utm";
+import { useUtmParameters } from "@/features/attribution/utm-provider";
 
-export type LeadCaptureData = {
+export type LeadCaptureData = UtmParameters & {
   name: string;
   email: string;
   whatsapp: string;
@@ -21,6 +23,7 @@ export function LeadCaptureForm({
   submitLabel = "Get in touch",
 }: LeadCaptureFormProps) {
   const id = useId();
+  const utmParameters = useUtmParameters();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -42,11 +45,11 @@ export function LeadCaptureForm({
     setErrorMessage("");
 
     try {
-      const data = {
+      const data = appendUtmParameters({
         name: String(formData.get("name") ?? "").trim(),
         email: String(formData.get("email") ?? "").trim(),
         whatsapp: String(formData.get("whatsapp") ?? "").trim(),
-      };
+      }, utmParameters);
       if (onSubmit) {
         await onSubmit(data);
       } else {

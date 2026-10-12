@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getUtmParametersFromRecord } from "@/features/attribution/utm";
 
 type LeadPayload = {
   name?: unknown;
@@ -75,7 +76,12 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
         "x-make-apikey": WebhookSecret || "",
       },
-      body: JSON.stringify({ name, email, whatsapp }),
+      body: JSON.stringify({
+        name,
+        email,
+        whatsapp,
+        ...getUtmParametersFromRecord(payload),
+      }),
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) {

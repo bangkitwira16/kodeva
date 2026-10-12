@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { pushGa4EcommerceEvent } from "@/features/analytics/ga4";
 import { useCartStore } from "@/features/marketplace/stores/cart.store";
 import type { Product } from "@/features/marketplace/types/product";
 
 export function ProductDetailView({ product }: { product: Product }) {
+  const instanceId = useId();
+  const viewedProduct = useRef<string | null>(null);
   const addItem = useCartStore((state) => state.addItem);
   const cartItems = useCartStore((state) => state.items);
   const [selectedPackageId, setSelectedPackageId] = useState(
@@ -26,6 +29,40 @@ export function ProductDetailView({ product }: { product: Product }) {
         .filter((item) => item.selectedPackage.promoPriceInCents !== undefined)
         .reduce((sum, item) => sum + item.quantity, 0),
   );
+  const selectedPriceInCents =
+    selectedPackage?.promoPriceInCents !== undefined && promoRemaining > 0
+      ? selectedPackage.promoPriceInCents
+      : (selectedPackage?.priceInCents ?? 0);
+
+  useEffect(() => {
+    if (viewedProduct.current === product.id) return;
+    viewedProduct.current = product.id;
+    pushGa4EcommerceEvent(
+      "view_item",
+      {
+        currency: "USD",
+        value: selectedPriceInCents / 100,
+        items: [
+          {
+            item_id: product.id,
+            item_name: product.name,
+            item_category: product.category,
+            item_variant: selectedPackage?.name,
+            price: selectedPriceInCents / 100,
+            quantity: 1,
+          },
+        ],
+      },
+      `${instanceId}:view_item:${product.id}`,
+    );
+  }, [
+    instanceId,
+    product.id,
+    product.name,
+    product.category,
+    selectedPackage?.name,
+    selectedPriceInCents,
+  ]);
 
   return (
     <div className="grid gap-10 lg:grid-cols-2">
@@ -152,6 +189,23 @@ export function ProductDetailView({ product }: { product: Product }) {
           onClick={() => {
             if (!selectedPackage) return;
             const result = addItem(product, selectedPackage);
+            if (result.success) {
+              const priceInCents = selectedPriceInCents;
+              pushGa4EcommerceEvent("add_to_cart", {
+                currency: "USD",
+                value: priceInCents / 100,
+                items: [
+                  {
+                    item_id: product.id,
+                    item_name: product.name,
+                    item_category: product.category,
+                    item_variant: selectedPackage.name,
+                    price: priceInCents / 100,
+                    quantity: 1,
+                  },
+                ],
+              });
+            }
             setMessage(
               result.success
                 ? `${product.name} (${selectedPackage.name}) added to your cart.`

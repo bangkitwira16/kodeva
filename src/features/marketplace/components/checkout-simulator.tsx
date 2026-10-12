@@ -1,13 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { appendUtmParameters } from "@/features/attribution/utm";
+import { useUtmParameters } from "@/features/attribution/utm-provider";
+import { pushGa4EcommerceEvent } from "@/features/analytics/ga4";
 import { formatCurrency, getCartPricing } from "@/features/marketplace/services/cart-pricing";
 import { useCartStore } from "@/features/marketplace/stores/cart.store";
 
 type PaymentStatus = "idle" | "processing" | "success" | "error";
 
+type CheckoutPayload = {
+  buyer: { name: string; email: string };
+  items: Array<{
+    productId: string;
+    productName: string;
+    packageId: string;
+    packageName: string;
+    quantity: number;
+    totalInCents: number;
+  }>;
+  totalInCents: number;
+};
+
+async function simulatePayment(
+  payload: CheckoutPayload,
+  simulateFailure: boolean,
+): Promise<boolean> {
+  if (payload.items.length === 0) return false;
+  await new Promise((resolve) => setTimeout(resolve, 700));
+  return !simulateFailure;
+}
+
 export function CheckoutSimulator() {
+  const instanceId = useId();
+  const didTrackCheckout = useRef(false);
+  const utmParameters = useUtmParameters();
   const items = useCartStore((state) => state.items);
   const hasHydrated = useCartStore((state) => state.hasHydrated);
   const clearCart = useCartStore((state) => state.clear);
@@ -15,13 +43,56 @@ export function CheckoutSimulator() {
   const [simulateFailure, setSimulateFailure] = useState(false);
   const pricing = getCartPricing(items);
 
+  useEffect(() => {
+    if (!hasHydrated || pricing.items.length === 0 || didTrackCheckout.current) {
+      return;
+    }
+    didTrackCheckout.current = true;
+    pushGa4EcommerceEvent(
+      "begin_checkout",
+      {
+        currency: "USD",
+        value: pricing.totalInCents / 100,
+        items: pricing.items.map((item) => ({
+          item_id: item.product.id,
+          item_name: item.product.name,
+          item_category: item.product.category,
+          item_variant: item.selectedPackage.name,
+          price:
+            item.quantity > 0
+              ? item.totalInCents / item.quantity / 100
+              : 0,
+          quantity: item.quantity,
+        })),
+      },
+      `${instanceId}:begin_checkout`,
+    );
+  }, [hasHydrated, instanceId, pricing]);
+
   async function submitPayment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "processing" || pricing.items.length === 0) return;
 
+    const formData = new FormData(event.currentTarget);
+    const payload = appendUtmParameters({
+      buyer: {
+        name: String(formData.get("name") ?? "").trim(),
+        email: String(formData.get("email") ?? "").trim(),
+      },
+      items: pricing.items.map((item) => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        packageId: item.selectedPackage.id,
+        packageName: item.selectedPackage.name,
+        quantity: item.quantity,
+        totalInCents: item.totalInCents,
+      })),
+      totalInCents: pricing.totalInCents,
+    }, utmParameters);
+
     setStatus("processing");
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    if (simulateFailure) {
+    const paymentSucceeded = await simulatePayment(payload, simulateFailure);
+    if (!paymentSucceeded) {
       setStatus("error");
       return;
     }
