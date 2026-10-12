@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#e8eef4"/><stop offset="1" stop-color="#cddce9"/></linearGradient><linearGradient id="chart" x2="0" y2="1"><stop stop-color="#7798bb" stop-opacity=".45"/><stop offset="1" stop-color="#7798bb" stop-opacity="0"/></linearGradient></defs>
+  <rect width="800" height="600" rx="36" fill="url(#bg)"/>
+  <circle cx="651" cy="125" r="62" fill="#f4d698" opacity=".6"/>
+  <rect x="84" y="92" width="632" height="410" rx="24" fill="#fbfcfd" stroke="#b8c9d8" stroke-width="3"/>
+  <rect x="84" y="92" width="632" height="61" rx="24" fill="#edf2f6"/>
+  <circle cx="120" cy="122" r="7" fill="#d48b79"/><circle cx="142" cy="122" r="7" fill="#e5be76"/><circle cx="164" cy="122" r="7" fill="#8ea7be"/>
+  <text x="121" y="202" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#344a60">INSIGHT DASHBOARD</text>
+  <rect x="121" y="223" width="163" height="82" rx="12" fill="#edf3f7"/>
+  <rect x="302" y="223" width="163" height="82" rx="12" fill="#f7f1e6"/>
+  <rect x="483" y="223" width="196" height="82" rx="12" fill="#eff3ed"/>
+  <text x="140" y="252" font-family="Arial,sans-serif" font-size="12" fill="#6d7e8d">TOTAL REVENUE</text>
+  <text x="140" y="284" font-family="Arial,sans-serif" font-size="25" font-weight="700" fill="#466c8e">$48.2k</text>
+  <text x="321" y="252" font-family="Arial,sans-serif" font-size="12" fill="#8d8069">ACTIVE USERS</text>
+  <text x="321" y="284" font-family="Arial,sans-serif" font-size="25" font-weight="700" fill="#aa8553">8,942</text>
+  <text x="502" y="252" font-family="Arial,sans-serif" font-size="12" fill="#718272">RETENTION</text>
+  <text x="502" y="284" font-family="Arial,sans-serif" font-size="25" font-weight="700" fill="#64866c">82.7%</text>
+  <rect x="121" y="325" width="356" height="145" rx="12" fill="#f4f7f9"/>
+  <path d="M143 445h309M143 409h309M143 373h309" stroke="#d9e1e7" stroke-width="2"/>
+  <path d="M145 440c37-19 42-5 76-38s54 8 83-18 49 19 80-24 42-15 69-41v126H145z" fill="url(#chart)"/>
+  <path d="M145 440c37-19 42-5 76-38s54 8 83-18 49 19 80-24 42-15 69-41" fill="none" stroke="#6386a7" stroke-width="6" stroke-linecap="round"/>
+  <rect x="493" y="325" width="186" height="145" rx="12" fill="#f4f7f9"/>
+  <text x="512" y="353" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#526a7e">TRAFFIC SOURCES</text>
+  <circle cx="565" cy="411" r="36" fill="none" stroke="#d6e0e8" stroke-width="14"/>
+  <path d="M565 375a36 36 0 0 1 31 18" fill="none" stroke="#6386a7" stroke-width="14"/>
+  <path d="M596 393a36 36 0 0 1-19 52" fill="none" stroke="#86a48a" stroke-width="14"/>
+  <text x="618" y="408" font-family="Arial,sans-serif" font-size="12" fill="#60717f">Search</text>
+  <text x="618" y="431" font-family="Arial,sans-serif" font-size="12" fill="#60717f">Social</text>
+  <text x="400" y="555" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3" fill="#3f5f7b">INSIGHT DASHBOARD</text>
+</svg>

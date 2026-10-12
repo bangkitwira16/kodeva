@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useId } from "react";
 
 export type LeadCaptureData = {
   name: string;
@@ -9,7 +10,7 @@ export type LeadCaptureData = {
 };
 
 type LeadCaptureFormProps = {
-  onSubmit: (data: LeadCaptureData) => Promise<void>;
+  onSubmit?: (data: LeadCaptureData) => Promise<void>;
   submitLabel?: string;
 };
 
@@ -19,6 +20,7 @@ export function LeadCaptureForm({
   onSubmit,
   submitLabel = "Get in touch",
 }: LeadCaptureFormProps) {
+  const id = useId();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -40,11 +42,21 @@ export function LeadCaptureForm({
     setErrorMessage("");
 
     try {
-      await onSubmit({
+      const data = {
         name: String(formData.get("name") ?? "").trim(),
         email: String(formData.get("email") ?? "").trim(),
         whatsapp: String(formData.get("whatsapp") ?? "").trim(),
-      });
+      };
+      if (onSubmit) {
+        await onSubmit(data);
+      } else {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error("Lead submission failed.");
+      }
       setStatus("success");
       form.reset();
     } catch {
@@ -58,13 +70,13 @@ export function LeadCaptureForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="lead-name">
+        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor={`${id}-name`}>
           Name
         </label>
         <input
           autoComplete="name"
           className="min-h-11 w-full rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-950 outline-none focus-visible:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900"
-          id="lead-name"
+          id={`${id}-name`}
           maxLength={120}
           name="name"
           placeholder="Your name"
@@ -73,13 +85,13 @@ export function LeadCaptureForm({
         />
       </div>
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="lead-email">
+        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor={`${id}-email`}>
           Email
         </label>
         <input
           autoComplete="email"
           className="min-h-11 w-full rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-950 outline-none focus-visible:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900"
-          id="lead-email"
+          id={`${id}-email`}
           maxLength={254}
           name="email"
           placeholder="you@example.com"
@@ -88,13 +100,13 @@ export function LeadCaptureForm({
         />
       </div>
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor="lead-whatsapp">
+        <label className="mb-1.5 block text-sm font-medium text-neutral-900" htmlFor={`${id}-whatsapp`}>
           WhatsApp <span className="font-normal text-neutral-500">(optional)</span>
         </label>
         <input
           autoComplete="tel"
           className="min-h-11 w-full rounded-lg border border-neutral-300 px-3 py-2 text-base text-neutral-950 outline-none focus-visible:border-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-900"
-          id="lead-whatsapp"
+          id={`${id}-whatsapp`}
           maxLength={32}
           name="whatsapp"
           placeholder="+1 555 010 1234"
@@ -105,10 +117,10 @@ export function LeadCaptureForm({
         aria-hidden="true"
         className="absolute -left-[10000px] h-px w-px overflow-hidden"
       >
-        <label htmlFor="lead-website">Leave this field empty</label>
+        <label htmlFor={`${id}-website`}>Leave this field empty</label>
         <input
           autoComplete="off"
-          id="lead-website"
+          id={`${id}-website`}
           name="website"
           tabIndex={-1}
           type="text"

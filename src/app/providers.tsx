@@ -1,7 +1,12 @@
 "use client";
 
-import { CartProvider } from "@/features/marketplace/stores/cart.store";
+import { useEffect, type ReactNode } from "react";
+import { useCartStore } from "@/features/marketplace/stores/cart.store";
 
-export function Providers({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <CartProvider>{children}</CartProvider>;
+export function Providers({ children }: Readonly<{ children: ReactNode }>) {
+  useEffect(() => {
+    void useCartStore.persist.rehydrate();
+  }, []);
+
+  return children;
 }

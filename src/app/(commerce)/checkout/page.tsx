@@ -1,11 +1,16 @@
+import { SectionWrapper } from "@/components/layout/section-wrapper";
+import { CheckoutSimulator } from "@/features/marketplace/components/checkout-simulator";
+
 export default function CheckoutPage() {
   return (
-    <section className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-4xl font-semibold tracking-tight">Checkout</h1>
-      <p className="mt-4 leading-7 text-neutral-600">
-        Checkout orchestration and payment integration belong to the
-        marketplace feature.
-      </p>
-    </section>
+    <SectionWrapper
+      contentWidth="wide"
+      description="Add your details and complete a simulated payment."
+      heading="Checkout"
+      headingLevel="h1"
+      variant="features"
+    >
+      <CheckoutSimulator />
+    </SectionWrapper>
   );
 }

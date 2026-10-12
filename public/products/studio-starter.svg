@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f4efe7"/><stop offset="1" stop-color="#dce8df"/></linearGradient>
+    <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f7f6f2"/></linearGradient>
+  </defs>
+  <rect width="800" height="600" rx="36" fill="url(#bg)"/>
+  <circle cx="664" cy="112" r="66" fill="#e9bb78" opacity=".55"/>
+  <rect x="100" y="85" width="600" height="392" rx="24" fill="#34443e"/>
+  <rect x="118" y="103" width="564" height="356" rx="16" fill="url(#panel)"/>
+  <rect x="118" y="103" width="564" height="49" rx="16" fill="#f0eee9"/>
+  <circle cx="145" cy="127" r="6" fill="#d78470"/><circle cx="165" cy="127" r="6" fill="#e4bd72"/><circle cx="185" cy="127" r="6" fill="#8da992"/>
+  <rect x="148" y="181" width="218" height="230" rx="14" fill="#eff2ec"/>
+  <text x="174" y="220" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#34443e">YOUR STUDIO</text>
+  <rect x="174" y="244" width="166" height="12" rx="6" fill="#ccd7ca"/>
+  <rect x="174" y="269" width="128" height="12" rx="6" fill="#d9ded5"/>
+  <rect x="174" y="314" width="52" height="52" rx="12" fill="#d28d73"/>
+  <rect x="238" y="314" width="52" height="52" rx="12" fill="#e4bd72"/>
+  <rect x="302" y="314" width="38" height="52" rx="12" fill="#829d88"/>
+  <rect x="393" y="181" width="259" height="104" rx="14" fill="#e6ece4"/>
+  <path d="M417 251c25-3 35-36 61-29s30 25 53 13 33-34 62-38" fill="none" stroke="#64806b" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="478" cy="222" r="7" fill="#d28d73"/><circle cx="531" cy="235" r="7" fill="#e4bd72"/><circle cx="593" cy="197" r="7" fill="#64806b"/>
+  <rect x="393" y="306" width="259" height="105" rx="14" fill="#f5eadc"/>
+  <rect x="417" y="329" width="151" height="12" rx="6" fill="#d9c8ae"/>
+  <rect x="417" y="353" width="201" height="12" rx="6" fill="#e2d5c1"/>
+  <rect x="417" y="377" width="116" height="12" rx="6" fill="#e2d5c1"/>
+  <path d="M65 477h670l-48 43H113z" fill="#596c60"/>
+  <text x="400" y="565" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3" fill="#34443e">STUDIO STARTER</text>
+</svg>

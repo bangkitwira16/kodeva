@@ -15,13 +15,13 @@ export function HeroSection() {
       </p>
       <div className="flex flex-wrap gap-4">
         <Link
-          className="rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white"
+          className="w-full sm:w-auto rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white"
           href="/marketplace"
         >
           Explore the marketplace
         </Link>
         <Link
-          className="rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium"
+          className="w-full sm:w-auto rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium"
           href="/blog"
         >
           Read the blog

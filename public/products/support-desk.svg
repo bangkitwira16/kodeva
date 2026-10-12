@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f3e7df"/><stop offset="1" stop-color="#e7cbbb"/></linearGradient></defs>
+  <rect width="800" height="600" rx="36" fill="url(#bg)"/>
+  <circle cx="655" cy="126" r="68" fill="#f4d996" opacity=".6"/>
+  <rect x="90" y="105" width="620" height="376" rx="24" fill="#fffdf9"/>
+  <rect x="90" y="105" width="620" height="57" rx="24" fill="#f3eee8"/>
+  <circle cx="126" cy="133" r="7" fill="#ce816c"/><circle cx="148" cy="133" r="7" fill="#e4bd73"/><circle cx="170" cy="133" r="7" fill="#86a08a"/>
+  <rect x="120" y="192" width="204" height="252" rx="16" fill="#f7f2ec"/>
+  <text x="142" y="224" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#554940">INBOX</text>
+  <rect x="139" y="242" width="166" height="52" rx="10" fill="#e7efe7"/>
+  <circle cx="160" cy="267" r="12" fill="#89a28a"/><rect x="181" y="257" width="102" height="8" rx="4" fill="#b8c5b7"/><rect x="181" y="272" width="80" height="7" rx="4" fill="#d0d7ce"/>
+  <rect x="139" y="305" width="166" height="52" rx="10" fill="#fffdf9"/>
+  <circle cx="160" cy="330" r="12" fill="#d89a7e"/><rect x="181" y="320" width="102" height="8" rx="4" fill="#d2c8bd"/><rect x="181" y="335" width="80" height="7" rx="4" fill="#e3dcd3"/>
+  <rect x="139" y="368" width="166" height="52" rx="10" fill="#fffdf9"/>
+  <circle cx="160" cy="393" r="12" fill="#dfbd72"/><rect x="181" y="383" width="102" height="8" rx="4" fill="#d2c8bd"/><rect x="181" y="398" width="80" height="7" rx="4" fill="#e3dcd3"/>
+  <text x="352" y="212" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#554940">CUSTOMER CONVERSATION</text>
+  <path d="M350 242h307a13 13 0 0 1 13 13v56a13 13 0 0 1-13 13H350z" fill="#eef2ec"/>
+  <circle cx="376" cy="271" r="14" fill="#86a08a"/>
+  <rect x="402" y="259" width="221" height="9" rx="4.5" fill="#bfccbd"/><rect x="402" y="278" width="183" height="8" rx="4" fill="#d0d9cd"/>
+  <path d="M650 345H398a13 13 0 0 0-13 13v53a13 13 0 0 0 13 13h252z" fill="#f8e8df"/>
+  <circle cx="625" cy="371" r="14" fill="#d58b72"/>
+  <rect x="421" y="359" width="174" height="9" rx="4.5" fill="#d5b6a7"/><rect x="421" y="378" width="207" height="8" rx="4" fill="#e4c9ba"/>
+  <path d="M405 111c0-91 146-91 146 0v27h-25v-27c0-61-96-61-96 0v27h-25z" fill="#536d65"/>
+  <rect x="386" y="123" width="37" height="70" rx="17" fill="#748f83"/><rect x="533" y="123" width="37" height="70" rx="17" fill="#748f83"/>
+  <text x="400" y="555" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3" fill="#725448">SUPPORT DESK</text>
+</svg>

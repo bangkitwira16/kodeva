@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#e6efe5"/><stop offset="1" stop-color="#c6dcc9"/></linearGradient><linearGradient id="leaf" x2="1" y2="1"><stop stop-color="#7ea287"/><stop offset="1" stop-color="#3d6d57"/></linearGradient></defs>
+  <rect width="800" height="600" rx="36" fill="url(#bg)"/>
+  <circle cx="655" cy="129" r="82" fill="#f4d99f" opacity=".72"/>
+  <rect x="95" y="105" width="610" height="379" rx="26" fill="#fffdf8"/>
+  <rect x="95" y="105" width="610" height="58" rx="26" fill="#e9eee7"/>
+  <circle cx="131" cy="134" r="7" fill="#d28c73"/><circle cx="153" cy="134" r="7" fill="#e5bd75"/><circle cx="175" cy="134" r="7" fill="#7d9f86"/>
+  <text x="130" y="213" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#344a3d">GROWTH OVERVIEW</text>
+  <rect x="130" y="236" width="170" height="90" rx="14" fill="#eff4ec"/>
+  <text x="151" y="267" font-family="Arial,sans-serif" font-size="13" fill="#718174">MONTHLY GROWTH</text>
+  <text x="151" y="305" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#3d6d57">+24.8%</text>
+  <rect x="320" y="236" width="170" height="90" rx="14" fill="#f7efe1"/>
+  <text x="341" y="267" font-family="Arial,sans-serif" font-size="13" fill="#8b806b">NEW CUSTOMERS</text>
+  <text x="341" y="305" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#aa7555">1,284</text>
+  <rect x="510" y="236" width="160" height="90" rx="14" fill="#edf1f4"/>
+  <text x="531" y="267" font-family="Arial,sans-serif" font-size="13" fill="#6d7d88">CONVERSION</text>
+  <text x="531" y="305" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#587d8c">6.4%</text>
+  <path d="M150 417h506" stroke="#dfe5dd" stroke-width="2"/>
+  <path d="M167 408c47-29 57-14 96-33s47 9 85-11 46-2 81-38 52 10 88-12 59-20 104-50" fill="none" stroke="url(#leaf)" stroke-width="9" stroke-linecap="round"/>
+  <path d="m602 264 20-2-3 20" fill="none" stroke="#3d6d57" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#78a080"><path d="M237 385c-48-48-81-33-85-1 27 15 55 15 85 1z"/><path d="M423 357c-5-56 25-79 53-67 1 30-16 51-53 67z"/><path d="M534 319c-7-51 20-72 46-62 2 27-13 47-46 62z"/></g>
+  <text x="400" y="548" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3" fill="#355744">GROWTH SUITE</text>
+</svg>

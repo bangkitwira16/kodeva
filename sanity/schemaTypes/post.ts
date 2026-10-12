@@ -23,6 +23,27 @@ export const post = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "excerpt",
+      title: "Excerpt",
+      type: "text",
+      rows: 3,
+      validation: (rule) => rule.max(240),
+    }),
+    defineField({
+      name: "publishStatus",
+      title: "Publish status",
+      type: "string",
+      options: {
+        list: [
+          { title: "Draft", value: "draft" },
+          { title: "Published", value: "published" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "draft",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "coverImage",
       title: "Cover image",
       type: "image",
@@ -75,6 +96,20 @@ export const post = defineType({
                   }),
                 ],
               }),
+              defineField({
+                name: "productLink",
+                title: "Marketplace product",
+                type: "object",
+                fields: [
+                  defineField({
+                    name: "product",
+                    title: "Product",
+                    type: "reference",
+                    to: [{ type: "product" }],
+                    validation: (rule) => rule.required(),
+                  }),
+                ],
+              }),
             ],
           },
         }),
@@ -103,6 +138,12 @@ export const post = defineType({
           to: [{ type: "category" }],
         }),
       ],
+    }),
+    defineField({
+      name: "category",
+      title: "Primary category",
+      type: "reference",
+      to: [{ type: "category" }],
     }),
   ],
   preview: {

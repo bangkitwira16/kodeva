@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#eee8f2"/><stop offset="1" stop-color="#d9d1e5"/></linearGradient></defs>
+  <rect width="800" height="600" rx="36" fill="url(#bg)"/>
+  <circle cx="654" cy="126" r="66" fill="#f1d29c" opacity=".66"/>
+  <rect x="80" y="100" width="640" height="390" rx="26" fill="#fffdfb"/>
+  <rect x="80" y="100" width="640" height="65" rx="26" fill="#f2eff4"/>
+  <circle cx="117" cy="132" r="7" fill="#d68d7e"/><circle cx="139" cy="132" r="7" fill="#e4be75"/><circle cx="161" cy="132" r="7" fill="#8fa58f"/>
+  <text x="194" y="139" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#51475b">CONTENT PLANNER</text>
+  <rect x="113" y="190" width="574" height="50" rx="11" fill="#f7f5f8"/>
+  <text x="137" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">MON</text>
+  <text x="220" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">TUE</text>
+  <text x="303" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">WED</text>
+  <text x="386" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">THU</text>
+  <text x="469" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">FRI</text>
+  <text x="552" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">SAT</text>
+  <text x="635" y="220" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#645c6c">SUN</text>
+  <g stroke="#eeeaf0" stroke-width="2"><path d="M113 253h574M113 319h574M113 385h574M113 451h574"/><path d="M196 253v198M279 253v198M362 253v198M445 253v198M528 253v198M611 253v198"/></g>
+  <rect x="124" y="264" width="64" height="44" rx="8" fill="#e5d8ee"/><circle cx="139" cy="279" r="5" fill="#9778ab"/><rect x="150" y="275" width="28" height="6" rx="3" fill="#aa94b8"/><rect x="137" y="291" width="41" height="5" rx="2.5" fill="#c3b4cc"/>
+  <rect x="287" y="330" width="65" height="44" rx="8" fill="#f8e7d8"/><circle cx="302" cy="345" r="5" fill="#cf906c"/><rect x="313" y="341" width="28" height="6" rx="3" fill="#d8a58b"/><rect x="300" y="357" width="42" height="5" rx="2.5" fill="#e5c8b7"/>
+  <rect x="369" y="396" width="65" height="44" rx="8" fill="#e4eee3"/><circle cx="384" cy="411" r="5" fill="#78977c"/><rect x="395" y="407" width="28" height="6" rx="3" fill="#9bb19d"/><rect x="382" y="423" width="42" height="5" rx="2.5" fill="#bfd0be"/>
+  <rect x="535" y="264" width="65" height="44" rx="8" fill="#f7edcf"/><circle cx="550" cy="279" r="5" fill="#c49d48"/><rect x="561" y="275" width="28" height="6" rx="3" fill="#d7bd7e"/><rect x="548" y="291" width="42" height="5" rx="2.5" fill="#e3d5ad"/>
+  <rect x="618" y="330" width="55" height="44" rx="8" fill="#ddeaf0"/><circle cx="632" cy="345" r="5" fill="#7299aa"/><rect x="643" y="341" width="22" height="6" rx="3" fill="#91afba"/><rect x="630" y="357" width="35" height="5" rx="2.5" fill="#b2c7ce"/>
+  <text x="400" y="555" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="3" fill="#5c4f6b">CONTENT PLANNER</text>
+</svg>

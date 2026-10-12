@@ -1,8 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-import type { ProductPackage } from "@/features/marketplace/components/product-card";
-import type { Product } from "@/features/marketplace/types/product";
+import type {
+  Product,
+  ProductPackage,
+} from "@/features/marketplace/types/product";
 
 type CartItemRowProps = {
   product: Product;
@@ -11,6 +14,7 @@ type CartItemRowProps = {
   maxQuantity: number;
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
+  promoQuantity?: number;
   currency?: string;
   locale?: string;
 };
@@ -22,19 +26,24 @@ export function CartItemRow({
   maxQuantity,
   onQuantityChange,
   onRemove,
+  promoQuantity,
   currency = "USD",
   locale = "en-US",
 }: CartItemRowProps) {
   const [limitMessage, setLimitMessage] = useState("");
-  const quantityInputId = `cart-quantity-${product.id}`;
+  const quantityInputId = `cart-quantity-${product.id}-${selectedPackage.id}`;
   const safeMaximum = Math.max(0, Math.floor(maxQuantity));
   const isOverQuota = quantity > safeMaximum;
   const unitPrice =
     selectedPackage.promoPriceInCents ?? selectedPackage.priceInCents;
+  const discountedQuantity = Math.min(quantity, promoQuantity ?? quantity);
+  const totalInCents =
+    unitPrice * discountedQuantity +
+    selectedPackage.priceInCents * (quantity - discountedQuantity);
   const totalPrice = new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-  }).format((unitPrice * quantity) / 100);
+  }).format(totalInCents / 100);
 
   function updateQuantity(nextQuantity: number) {
     if (nextQuantity > safeMaximum) {
@@ -48,11 +57,27 @@ export function CartItemRow({
 
   return (
     <article className="grid gap-4 border-b border-neutral-200 py-5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
-      <div className="min-w-0">
-        <h3 className="truncate font-semibold text-neutral-950">{product.name}</h3>
-        <p className="mt-1 text-sm text-neutral-600">
-          {selectedPackage.name} package
-        </p>
+      <div className="flex min-w-0 items-center gap-4">
+        {product.imageUrl ? (
+          <Image
+            alt=""
+            className="size-16 shrink-0 rounded-xl bg-neutral-100 object-cover sm:size-20"
+            height={80}
+            src={product.imageUrl}
+            width={80}
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="size-16 shrink-0 rounded-xl bg-neutral-100 sm:size-20"
+          />
+        )}
+        <div className="min-w-0">
+          <h3 className="truncate font-semibold text-neutral-950">{product.name}</h3>
+          <p className="mt-1 text-sm text-neutral-600">
+            {selectedPackage.name} package
+          </p>
+        </div>
       </div>
       <div>
         <label
@@ -101,7 +126,11 @@ export function CartItemRow({
         <p className="mt-1 text-xs text-neutral-600" id={`${quantityInputId}-hint`}>
           Maximum available: {safeMaximum}
         </p>
-        <p aria-live="polite" className="mt-1 min-h-5 text-sm text-red-700" role="status">
+        <p
+          aria-live="polite"
+          className="mt-1 min-h-5 text-sm text-red-700"
+          role="status"
+        >
           {isOverQuota
             ? `Quantity exceeds the ${safeMaximum}-license quota.`
             : limitMessage}
