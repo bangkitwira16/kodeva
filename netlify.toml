@@ -1,0 +1,4 @@
+[build.environment]
+  # Sanity's project ID and dataset are public identifiers embedded in the
+  # client bundle by design (NEXT_PUBLIC_*), so exclude them from secrets scanning.
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SANITY_DATASET,NEXT_PUBLIC_SANITY_PROJECT_ID"
