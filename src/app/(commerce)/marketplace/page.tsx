@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SectionWrapper } from "@/components/layout/section-wrapper";
 import { ProductCatalogView } from "@/features/marketplace/components/product-catalog-view";
 import { getMarketplaceProducts } from "../../../../sanity/lib/queries";
@@ -10,17 +11,8 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-type MarketplacePageProps = {
-  searchParams: Promise<{ category?: string }>;
-};
-
-export default async function MarketplacePage({
-  searchParams,
-}: MarketplacePageProps) {
-  const [{ category }, products] = await Promise.all([
-    searchParams,
-    getMarketplaceProducts(),
-  ]);
+export default async function MarketplacePage() {
+  const products = await getMarketplaceProducts();
 
   return (
     <SectionWrapper
@@ -29,7 +21,15 @@ export default async function MarketplacePage({
       headingLevel="h1"
       variant="features"
     >
-      <ProductCatalogView initialCategory={category} products={products} />
+      <Suspense
+        fallback={
+          <p aria-live="polite" className="py-8 text-neutral-600" role="status">
+            Loading marketplace filters...
+          </p>
+        }
+      >
+        <ProductCatalogView products={products} />
+      </Suspense>
     </SectionWrapper>
   );
 }
