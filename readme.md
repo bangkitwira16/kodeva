@@ -255,9 +255,9 @@ Pengujian performa pada simulasi perangkat seluler menunjukkan hasil yang melamp
 ======================================================
   HASIL AUDIT LIGHTHOUSE MOBILE (Target: >= 80)
 ======================================================
-  [✓] Performance (Performa):  88 / 100
-  [✓] Accessibility (Akses):   96 / 100
-  [✓] Best Practices:          100 / 100
+  [✓] Performance (Performa):  100 / 100
+  [✓] Accessibility (Akses):   100 / 100
+  [✓] Best Practices:          96 / 100
   [✓] SEO:                     100 / 100
 ======================================================
 ```
