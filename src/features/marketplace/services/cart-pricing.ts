@@ -1,6 +1,7 @@
 import type { CartItem } from "@/features/marketplace/types/product";
 import {
   getVoucherDiscountInCents,
+  normalizeVoucherCode,
   validateVoucher,
   type VoucherValidation,
 } from "@/features/marketplace/services/vouchers";
@@ -69,11 +70,14 @@ export function getCartPricing(
   });
 
   const subtotalInCents = totalInCents;
-  const voucherValidation = voucherCode
+  const normalizedVoucherCode = voucherCode
+    ? normalizeVoucherCode(voucherCode)
+    : null;
+  const voucherValidation = normalizedVoucherCode
     ? validateVoucher(
-        voucherCode,
+        normalizedVoucherCode,
         subtotalInCents,
-        voucherRedemptionCounts[voucherCode] ?? 0,
+        voucherRedemptionCounts[normalizedVoucherCode] ?? 0,
       )
     : null;
   const voucherDiscountInCents =
