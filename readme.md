@@ -264,7 +264,7 @@ Pengujian performa pada simulasi perangkat seluler menunjukkan hasil yang melamp
 
 *(Catatan: Tautan gambar tangkapan layar hasil audit Google Chrome DevTools terlampir pada direktori aset project)*
 
-`![Lighthouse Mobile Score](./public/screenshots/lighthouse-mobile.png)`
+![Lighthouse Mobile Score](./public/screenshots/lighthouse-mobile.png)
 
 ---
 *Disusun untuk Penilaian Technical Test PT Digital Solusi Grup.*
