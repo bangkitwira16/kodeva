@@ -112,6 +112,50 @@ export function ProductCatalogView({
   }, [category, categories, isCategoryMenuOpen]);
 
   useEffect(() => {
+    if (!isCategoryMenuOpen) return;
+
+    function closeCategoryMenuOnOutsidePointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        !categoryMenuRef.current?.contains(target) &&
+        !categoryTriggerRef.current?.contains(target)
+      ) {
+        setIsCategoryMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeCategoryMenuOnOutsidePointerDown);
+    return () =>
+      document.removeEventListener(
+        "pointerdown",
+        closeCategoryMenuOnOutsidePointerDown,
+      );
+  }, [isCategoryMenuOpen]);
+
+  useEffect(() => {
+    if (!isSortMenuOpen) return;
+
+    function closeSortMenuOnOutsidePointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        !sortMenuRef.current?.contains(target) &&
+        !sortTriggerRef.current?.contains(target)
+      ) {
+        setIsSortMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeSortMenuOnOutsidePointerDown);
+    return () =>
+      document.removeEventListener(
+        "pointerdown",
+        closeSortMenuOnOutsidePointerDown,
+      );
+  }, [isSortMenuOpen]);
+
+  useEffect(() => {
     if (!isSortMenuOpen) return;
     const selectedIndex = SORT_OPTIONS.findIndex(([value]) => value === sort);
     sortOptionRefs.current[selectedIndex]?.focus();
@@ -216,7 +260,10 @@ export function ProductCatalogView({
                   className="absolute right-0 z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg"
                   id="marketplace-sort-menu"
                   onBlur={(event) => {
-                    if (!event.currentTarget.contains(event.relatedTarget)) {
+                    if (
+                      event.relatedTarget &&
+                      !event.currentTarget.contains(event.relatedTarget)
+                    ) {
                       setIsSortMenuOpen(false);
                     }
                   }}
@@ -303,7 +350,10 @@ export function ProductCatalogView({
               className="absolute right-0 z-20 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-neutral-200 bg-white p-1.5 shadow-lg"
               id="product-category-menu"
               onBlur={(event) => {
-                if (!event.currentTarget.contains(event.relatedTarget)) {
+                if (
+                  event.relatedTarget &&
+                  !event.currentTarget.contains(event.relatedTarget)
+                ) {
                   setIsCategoryMenuOpen(false);
                 }
               }}
